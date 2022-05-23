@@ -21,11 +21,11 @@ sudo apt-get install python3-numpy
 
 ## Installation
 First specify your directory using terminal: 
-``` git
+``` bash
 cd your/path/name
 ```
 Then, copy or type the following:
-``` git
+``` bash
 git clone https://github.com/Niss7z/Face-Recognition-with-Raspberry-Pi.git
 ```
 
