@@ -36,9 +36,9 @@ git clone https://github.com/Niss7z/Face-Recognition-with-Raspberry-Pi.git
 │   │   ├── pyvenv.cfg 
 ├── FaceRecogniton.py
 ```
-This is essentially the project structure. 
+This is essentially the project structure.
 
-All training images go inside the faceTrain folder.  Virtual environments and the likes go inside the venv
+All training images go inside the ``faceTrain`` folder.  Virtual environments and the likes go inside the ``venv``
 folder. Main code is written inside FaceRecognition.py file.
 
 ## Licence
