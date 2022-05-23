@@ -18,15 +18,15 @@ def get_pwm(angle):
     return (angle/18.0) + 2.5 # converting angles to duty cycle
 
 def unlockDoor(pinNum):
-    global faceDetected
-    if faceDetected == 1:
+    global faceDetected # declare this as global variable so that we may use it later
+    if faceDetected == 10:
         print('unlocking')
         GPIO.output(pinNum, True)
         pwm.ChangeDutyCycle(get_pwm(180)) #unlock
         time.sleep(10)
         pwm.ChangeDutyCycle(get_pwm(0)) #lock
         time.sleep(1)
-    faceDetected = 0
+        faceDetected = 0 
 
 directory = 'faceTrain'
 images = []
@@ -68,16 +68,20 @@ while True:  # smaller image scale for better detection
         faceDistance = face_recognition.face_distance(encodeListKnown, encodeFace)
         print(faceDistance)
         matchIndex = np.argmin(faceDistance)
-        isTrue = False
-        if matches[matchIndex]:
+        if matches[matchIndex] and float(faceDistance[matchIndex]) < 0.37: # if confidence is below 0.37 then don't rpint
             name = names[matchIndex].upper()
             print(name)
             y1, x2, y2, x1 = faceLocation
             y1, x2, y2, x1 = y1*4,x2*4,y2*4,x1*4
             cv2.rectangle(frame, (x1, y1), (x2, y2), (0,255,0), 2)
             cv2.putText(frame, name, (x1+7, y2-7),cv2.FONT_ITALIC, 1, (255, 0, 0), 2)
-            faceDetected = 1
+            faceDetected += 1
             unlockDoor(pin)
+            print(f'# of times detected ={faceDetected}')
+            prevName = name
+            if name != prevName:
+                faceDetected = 0 # if the previous name is not equal to the current name, in order words if A.I detects person differently, restart the count
+
 
         else:
             print('unknown')
@@ -85,8 +89,9 @@ while True:  # smaller image scale for better detection
             y1, x2, y2, x1 = y1 * 4, x2 * 4, y2 * 4, x1 * 4
             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
             cv2.putText(frame, 'unknown', (x1 + 7, y2 - 7), cv2.FONT_ITALIC, 1, (255, 0, 0), 2)
+            faceDetected = 0 # whenever a face is detected as 'unknown' reset the count - this is for security purposes
+            print(f'# of times detected ={faceDetected}') 
             
     cv2.imshow('Webcam', frame)
     if cv2.waitKey(20) & 0xFF == ord('q'):
         break
-    
